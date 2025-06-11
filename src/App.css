@@ -1,38 +1,224 @@
+* {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@keyframes moveCloud {
+  0% {
+    transform: translateX(-20vw);
+  }
+  100% {
+    transform: translateX(120vw);
+  }
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* 將貓咪圖片放置在畫面右下角 */
+.background_cat {
+  position: fixed;
+  bottom: -45px;
+  right: 80px;
+  width: 25%;
+  z-index: 1000;
+  object-fit: cover;
+}
+
+.cloud,
+.cloud2,
+.cloud3 {
+  position: absolute;
+  top: 10%;
+  left: -30%;
+  width: 20%;
+  z-index: 9;
+  animation: moveCloud 60s linear infinite;
+}
+
+.cloud2 {
+  top: 25%;
+  width: 25%;
+  animation-delay: -20s;
+}
+
+.cloud3 {
+  top: 35%;
+  width: 30%;
+  animation-delay: -40s;
+}
+
+.advertising_billboard {
+  position: fixed;
+  top: 20%;
+  left: 47%;
+  transform: translate(-50%, -32%);
+  width: 120vw;
+  z-index: 10;
+}
+
+.weekly_tasks {
+  position: absolute;
+  top: 20%;
+  left: 70%;
+  transform: translate(-50%, 30%);
+  width: 15%;
+  z-index: 10;
+}
+
+.daily-tasks {
+  position: absolute;
+  top: 20%;
+  left: 30%;
+  transform: translate(-50%, 30%);
+  width: 15%;
+  z-index: 10;
+}
+
+.daily-tasks2 {
+  position: absolute;
+  top: 20%;
+  left: 40%;
+  transform: translate(-50%, 30%);
+  width: 15%;
+  z-index: 10;
+}
+
+.button-wrapper {
+  position: absolute;
+  top: 20%;
+  width: 8vw;
+  z-index: 10;
+}
+
+.index-1 { left: 20%; transform: translate(30%, 30%); }
+.index-2 { left: 35%; transform: translate(-10%, 30%); }
+.index-3 { left: 50%; transform: translate(-50%, 30%); }
+.index-4 { left: 60%; transform: translate(-25%, 30%); }
+.index-5 { left: 70%; transform: translate(-8%, 30%); }
+
+.button {
+  width: 100%;
+  transition: transform 0.1s ease;
+  transform-origin: center center;
+  cursor: pointer;
+}
+
+.button:active {
+  transform: scale(0.95) rotate(-2deg);
+  filter: brightness(1.2);
+}
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  position: relative;
 }
 
-.App-link {
-  color: #61dafb;
+/* 全螢幕前的遮罩層 */
+.fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, 
+    rgba(45, 144, 243, 0.9) 0%, 
+    rgba(33, 150, 243, 0.8) 50%, 
+    rgba(21, 101, 192, 0.9) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(5px);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* 全螢幕按鈕樣式 */
+.full_screen_button {
+  position: relative;
+  padding: 30px 50px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2d90f3 0%, #1976d2 100%);
+  color: #fff;
+  box-shadow: 
+    0px 8px 25px rgba(73, 141, 208, 0.4),
+    0px 4px 15px rgba(87, 85, 85, 0.2);
+  font-size: 24px;
+  font-weight: 600;
+  outline: 0;
+  border: 0;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  z-index: 10000;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+.full_screen_button:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0px 12px 35px rgba(45, 144, 243, 0.5),
+    0px 6px 20px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(135deg, #3498f4 0%, #1e88e5 100%);
+}
+
+.full_screen_button:active {
+  transform: translateY(-1px);
+  box-shadow: 
+    0px 6px 20px rgba(45, 144, 243, 0.4),
+    0px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.full_screen_button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent);
+  transition: left 0.5s;
+}
+
+.full_screen_button:hover::before {
+  left: 100%;
+}
+
+.full_screen_button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.full_screen_button:active::after {
+  width: 300px;
+  height: 300px;
 }
