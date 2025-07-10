@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import "./CalendarPanel.css";
+import "../style/CalendarPanel.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function CalendarPanel() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState({});
-  const [eventLinks, setEventLinks] = useState({});
   const [showInput, setShowInput] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [inputText, setInputText] = useState("");
+  const [startTime, setStartTime] = useState("10:00");
+  const [endTime, setEndTime] = useState("11:00");
+  const [isEditing, setIsEditing] = useState(false);
 
   const [accessToken, setAccessToken] = useState(null);
   const [userName, setUserName] = useState(null);
@@ -70,42 +72,81 @@ export default function CalendarPanel() {
     }
     const key = getDateKey(day);
     setSelectedDate(key);
-    setInputText(events[key] || "");
+
+    const existingEvent = events[key];
+    if (existingEvent) {
+      setIsEditing(true);
+      setInputText(existingEvent.summary || "");
+      setStartTime(existingEvent.start?.dateTime ? existingEvent.start.dateTime.substring(11, 16) : "10:00");
+      setEndTime(existingEvent.end?.dateTime ? existingEvent.end.dateTime.substring(11, 16) : "11:00");
+    } else {
+      setIsEditing(false);
+      setInputText("");
+      setStartTime("10:00");
+      setEndTime("11:00");
+    }
+
     setShowInput(true);
   };
 
   const handleSave = async () => {
-    setEvents((prev) => ({ ...prev, [selectedDate]: inputText }));
+    setEvents((prev) => ({ 
+      ...prev, 
+      [selectedDate]: {
+        ...prev[selectedDate],
+        summary: inputText,
+        start: { dateTime: `${selectedDate}T${startTime}:00` },
+        end: { dateTime: `${selectedDate}T${endTime}:00` }
+      }
+    }));
     setShowInput(false);
 
-    const event = {
+    const eventPayload = {
       summary: inputText,
       start: {
-        dateTime: `${selectedDate}T10:00:00`,
+        dateTime: `${selectedDate}T${startTime}:00`,
         timeZone: "Asia/Taipei",
       },
       end: {
-        dateTime: `${selectedDate}T11:00:00`,
+        dateTime: `${selectedDate}T${endTime}:00`,
         timeZone: "Asia/Taipei",
       },
     };
 
     try {
-      const res = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
-        method: "POST",
+      const isUpdating = isEditing && events[selectedDate]?.id;
+      const eventId = isUpdating ? events[selectedDate].id : null;
+      
+      const url = isUpdating
+        ? `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`
+        : "https://www.googleapis.com/calendar/v3/calendars/primary/events";
+      
+      const method = isUpdating ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method: method,
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(event),
+        body: JSON.stringify(eventPayload),
       });
 
       const result = await res.json();
       console.log("📥 Google API 回傳：", result);
 
-      if (res.ok && result.htmlLink) {
-        setEventLinks((prev) => ({ ...prev, [selectedDate]: result.htmlLink }));
-        toast.success("✅ 成功寫入 Google 日曆！");
+      if (res.ok) {
+        setEvents((prev) => ({
+          ...prev,
+          [selectedDate]: {
+            id: result.id,
+            summary: result.summary,
+            htmlLink: result.htmlLink,
+            start: result.start,
+            end: result.end
+          },
+        }));
+        toast.success(`✅ ${isUpdating ? '更新' : '新增'}成功！`);
       } else {
         toast.error(`❌ Google 回傳錯誤：${result.error?.message || "未知錯誤"}`);
       }
@@ -136,15 +177,15 @@ export default function CalendarPanel() {
 
   return (
     <div className="calendar-container">
-      <ToastContainer position="bottom-right" />
+      <ToastContainer position="bottom-right" autoClose={3000} />
       {/* 登入區塊 */}
-      <div style={{ position: "absolute", top: 10, right: 30, zIndex: 9999 }}>
+      <div style={{ position: "absolute", top: -45, right: 200, zIndex: 9999 }}>
         {!accessToken ? (
           <button onClick={handleLogin} style={loginStyle}>登入 Google</button>
         ) : (
-          <div style={{ fontSize: "12px", color: "#7a5c48" }}>
+          <div className="login-status">
             ✅ {userName} 已登入
-            <button onClick={handleLogout} style={logoutStyle}>登出</button>
+            <button onClick={handleLogout} className="logout-btn">登出</button>
           </div>
         )}
       </div>
@@ -176,16 +217,17 @@ export default function CalendarPanel() {
           <div className="calendar">
             {calendarGrid().map((day, index) => {
               const key = getDateKey(day);
+              const event = events[key];
               return (
                 <div key={index} className={`day-box ${day === null ? "empty" : ""}`} onClick={() => day && handleDayClick(day)}>
                   {day !== null && (
                     <div style={{ textAlign: "center" }}>
                       <div>{day}</div>
-                      {events[key] && (
-                        <div className="day-box-content" title={events[key]}>
-                          {events[key]}
-                          {eventLinks[key] && (
-                            <a href={eventLinks[key]} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 4 }}>🔗</a>
+                      {event && (
+                        <div className="day-box-content" title={event.summary}>
+                          {event.summary}
+                          {event.htmlLink && (
+                            <a href={event.htmlLink} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 4 }} onClick={(e) => e.stopPropagation()}>🔗</a>
                           )}
                         </div>
                       )}
@@ -199,18 +241,28 @@ export default function CalendarPanel() {
       </div>
 
       {showInput && (
-        <div style={modalStyle}>
-          <div style={modalContentStyle}>
-            <h3>{selectedDate} 的事件</h3>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>{isEditing ? '修改' : '新增'} {selectedDate} 的事件</h3>
             <textarea
+              className="modal-textarea"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              style={{ width: "100%", height: "80px" }}
               placeholder="請輸入事件內容"
             />
-            <div style={{ marginTop: "10px", textAlign: "right" }}>
-              <button onClick={handleCancel} style={{ marginRight: "10px" }}>取消</button>
-              <button onClick={handleSave}>儲存到 Google 日曆</button>
+            <div className="modal-time-pickers">
+              <div className="time-picker">
+                <label>開始時間</label>
+                <input type="time" className="time-input" value={startTime} onChange={e => setStartTime(e.target.value)} />
+              </div>
+              <div className="time-picker">
+                <label>結束時間</label>
+                <input type="time" className="time-input" value={endTime} onChange={e => setEndTime(e.target.value)} />
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button onClick={handleCancel} className="btn btn-cancel">取消</button>
+              <button onClick={handleSave} className="btn btn-save">{isEditing ? '儲存變更' : '儲存'}</button>
             </div>
           </div>
         </div>
@@ -229,30 +281,3 @@ const loginStyle = {
   cursor: "pointer",
 };
 
-const logoutStyle = {
-  marginLeft: "10px",
-  fontSize: "12px",
-  background: "#f2dac8",
-  border: "1px solid #c2a28e",
-  borderRadius: "5px",
-  padding: "2px 6px",
-  cursor: "pointer",
-};
-
-const modalStyle = {
-  position: "fixed",
-  top: 0, left: 0, right: 0, bottom: 0,
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  zIndex: 9999
-};
-
-const modalContentStyle = {
-  backgroundColor: "#fff",
-  padding: "20px",
-  borderRadius: "8px",
-  width: "300px",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
-};

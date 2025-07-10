@@ -1,0 +1,15 @@
+/* 全域 body 樣式，設置字型與消除預設邊距 */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased; /* 讓字體在 macOS 上更平滑 */
+  -moz-osx-font-smoothing: grayscale;  /* 讓字體在 macOS 上更平滑 */
+}
+
+/* 程式碼區塊專用字型 */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

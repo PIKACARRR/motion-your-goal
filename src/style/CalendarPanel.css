@@ -1,0 +1,312 @@
+/* 行事曆外層容器，負責置中與與上方間距 */
+.calendar-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top:270px; /* 控制行事曆區塊與上方距離 */
+  z-index: 100;
+}
+
+/* 行事曆主框，控制寬度與垂直排列 */
+.calendar-frame {
+  display: flex;
+  flex-direction: column;
+  width: 1200px; /* 行事曆整體寬度，可依背景格子調整 */
+}
+
+/* 行事曆上方區塊，預留標題列空間 */
+.calendar-top {
+  position: relative;
+}
+
+/* 行事曆標題列，含標題、月份切換、登入按鈕 */
+.calendar-title-bar {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 55px;
+  background-color: #e6c4ad; /* 奶茶色背景 */
+  border: 1.5px solid #c2a28e; /* 深奶茶色邊框 */
+  border-bottom: none; /* 底部無邊框 */
+  border-radius: 10px 10px 0 0; /* 上方圓角 */
+  display: flex;
+  justify-content: space-between; /* 左右分散 */
+  align-items: center; /* 垂直置中 */
+  padding: 0 15px; /* 左右內距 */
+}
+
+/* 標籤分頁區塊 */
+.nav-tabs {
+  display: flex;
+  gap: 10px;
+}
+
+/* 分頁按鈕樣式 */
+.tab-button {
+  margin-top: 10px;
+  background-color: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px 8px 0 0;
+  font-weight: bold;
+  color: #7a5c48; /* 深奶茶色 */
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* 分頁按鈕啟用狀態 */
+.tab-button.active {
+  background-color: #f2dac8; /* 更淺的奶茶色 */
+  border: 1px solid #c2a28e;
+  border-bottom: none;
+}
+
+/* 月份切換按鈕區塊 */
+.date-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 月份切換按鈕樣式 */
+.nav-button {
+  background-color: #f2dac8; /* 更淺的奶茶色 */
+  border: 2px solid #c2a28e;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #7a5c48; /* 深奶茶色 */
+  transition: all 0.2s;
+}
+
+/* 月份切換按鈕 hover 效果 */
+.nav-button:hover {
+  background-color: #dbbc9f; /* 稍深的奶茶色 */
+}
+
+/* 顯示目前年月 */
+.current-date {
+  font-size: 16px;
+  font-weight: bold;
+  color: #7a5c48; /* 深奶茶色 */
+}
+
+/* 行事曆內容外框，含所有格子 */
+.calendar-board {
+  height: 600px; /* 行事曆內容高度 */
+  background-color: #e6c4ad; /* 奶茶色背景 */
+  border: 1.5px solid #c2a28e; /* 深奶茶色邊框 */
+  padding: 15px; /* 內距 */
+  box-shadow: inset 0 0 8px rgba(194, 162, 142, 0.2); /* 內陰影 */
+}
+
+/* 星期標籤列，與日期格子對齊 */
+.weekday-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+/* 星期標籤格子 */
+.weekday {
+  text-align: center;
+  font-weight: bold;
+  color: #7a5c48; /* 深奶茶色 */
+  font-size: 15px;
+  width: 100%;
+  padding: 0;
+}
+
+/* 日期格子區域，7欄6列 */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 6px; /* 格子間距 */
+}
+
+/* 每一格日期的樣式 */
+.day-box {
+  aspect-ratio: 1 / 0.530;           /* 控制格子的寬高比例 */
+  border-radius: 6px;                 /* 圓角 */
+  background-color: rgba(255, 246, 235, 0.8); /* 奶茶色半透明背景 */
+  border: 2px solid #c2a28e;         /* 深奶茶色邊框 */
+  display: flex;
+  flex-direction: column;             /* 內容垂直排列 */
+  justify-content: flex-start;        /* 內容靠上對齊 */
+  align-items: center;                /* 內容水平置中 */
+  padding-top: 4px;                   /* 上方內距，讓文字不會貼頂 */
+  font-weight: bold;                  /* 文字加粗 */
+  font-size: 16px;                    /* 文字大小 */
+  color: #7a5c48;                     /* 文字顏色 */
+  transition: all 0.2s;               /* 動畫過渡效果 */
+  text-align: center;                 /* 文字置中 */
+  overflow: hidden;                   /* 超出格子的內容隱藏 */
+}
+
+/* 滑鼠移到日期格子的效果 */
+.day-box:hover {
+  background-color: #f2dac8; /* 更淺的奶茶色 */
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+/* 空白格子（非本月日期） */
+.day-box.empty {
+  border: none;
+  background-color: transparent;
+}
+
+/* 已登入狀態區塊 */
+.login-status {
+  display: flex;
+  align-items: center;
+  font-size: 14px;         /* 你可以調整字體大小 */
+  color: #7a5c48;
+  gap: 8px;                /* 文字和按鈕之間的間距 */
+  height: 35px;            /* 跟登入按鈕一樣高 */
+}
+
+/* 登出按鈕樣式 */
+.logout-btn {
+  margin-left: 10px;
+  font-size: 14px;
+  background: #f2dac8;
+  border: 1px solid #c2a28e;
+  border-radius: 5px;
+  padding: 2px 12px;
+  cursor: pointer;
+  height: 28px;            /* 跟外框高度協調 */
+  box-sizing: border-box;
+  font-weight: bold;
+}
+
+.logout-btn:hover {
+  background-color: #eee;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  backdrop-filter: blur(3px); /* Frosted glass effect */
+}
+
+.modal-content {
+  background-color: #e3d9c9 !important;
+  color: #333333;
+  padding: 24px;
+  border-radius: 12px !important;
+  border: 1px solid #000000 !important; /* 這行是加白色邊框 */
+  width: 90%;
+  max-width: 550px; /* A bit wider */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Spacing between elements */
+}
+
+.modal-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.modal-textarea {
+  width: 100%;
+  height: 100px;
+  padding: 12px;
+  border: 1px solid #ccc; /* Darker border */
+  border-radius: 8px;
+  resize: vertical;
+  font-size: 14px;
+  box-sizing: border-box; /* Important for padding */
+  transition: border-color 0.2s;
+}
+
+.modal-textarea:focus {
+  outline: none;
+  border-color: #4285f4; /* Google blue for focus */
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.modal-time-pickers {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.time-picker {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.time-picker label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.time-picker input[type="time"] {
+  padding: 8px 12px;
+  border: 1px solid #ccc; /* Darker border */
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* Base button style */
+.modal-actions .btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+/* Cancel button style */
+.modal-actions .btn-cancel {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.modal-actions .btn-cancel:hover {
+  background-color: #e0e0e0;
+}
+
+/* Save button style */
+.modal-actions .btn-save {
+  background-color: #4285f4; /* Google blue */
+  color: #fff;
+}
+
+.modal-actions .btn-save:hover {
+  background-color: #357ae8;
+  box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+}
+

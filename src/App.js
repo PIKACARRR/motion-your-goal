@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import CalendarPanel from "./components/CalendarPanel";
-import "./App.css"; // 引入 CSS 檔案
+import SettingsPanel from "./components/SettingsPanel";
+import ExercisePanel from './components/ExercisePanel';
+import "./style/App.css"; // 引入 CSS 檔案
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -66,9 +70,26 @@ function App() {
 
   return (
     <div className="App">
+      <ToastContainer position="bottom-right" autoClose={3000} />
       {/* 全螢幕前的遮罩和按鈕 */}
       {!isFullScreen && (
-        <div className="fullscreen-overlay">
+        <div
+          className="fullscreen-overlay"
+          style={{
+            background: "url('/images/fullscreen_background.jpg') no-repeat center center fixed",
+            backgroundSize: "cover",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+            backdropFilter: "blur(5px)"
+          }}
+        >
           <button onClick={enterFullScreen} className="full_screen_button">
             請點擊按鈕進入全螢幕模式
           </button>
@@ -78,40 +99,24 @@ function App() {
       {/* 只有在全螢幕模式下才顯示主要內容 */}
       {isFullScreen && (
         <>
-          {/* 主畫面 */}
-          {activePanel === "main" && (
-            <>
-              {/* 嘗試不同的路徑寫法 */}
-              <img 
-                src="/images/fullscreen_background.jpg" 
-                className="background" 
-                alt="背景"
-                onLoad={() => console.log("背景圖片載入成功")}
-                onError={() => console.log("背景圖片載入失敗")}
-              />
-              <img src="/images/background_cat.gif" className="background_cat" alt="背景貓咪" />
-              <img src={`${process.env.PUBLIC_URL}/images/advertising_billboard.png`} className="advertising_billboard" alt="廣告看板" />
-              <img src={`${process.env.PUBLIC_URL}/images/cloud.png`} className="cloud" alt="雲" />
-              <img src={`${process.env.PUBLIC_URL}/images/cloud.png`} className="cloud2" alt="雲" />
-              <img src={`${process.env.PUBLIC_URL}/images/cloud.png`} className="cloud3" alt="雲" />
-              <img src={`${process.env.PUBLIC_URL}/images/weekly_tasks.png`} className="weekly_tasks" alt="每週任務" />
-              <img src={`${process.env.PUBLIC_URL}/images/daily-tasks.png`} className="daily-tasks" alt="每日任務" />
-              <img src={`${process.env.PUBLIC_URL}/images/daily-tasks.png`} className="daily-tasks2" alt="每日任務2" />
-            </>
-          )}
+          {/* 背景與裝飾（固定不變） */}
+          <img 
+            src="/images/fullscreen_background.jpg" 
+            className="background" 
+            alt="背景"
+            onLoad={() => console.log("背景圖片載入成功")}
+            onError={() => console.log("背景圖片載入失敗")}
+          />
+          <img src="/images/background_cat.gif" className="background_cat" alt="背景貓咪" />
+          <img src={`${process.env.PUBLIC_URL}/images/advertising_billboard.png`} className="advertising_billboard" alt="廣告看板" />
+          <img src={`${process.env.PUBLIC_URL}/images/cloud.png`} className="cloud" alt="雲" />
+          <img src={`${process.env.PUBLIC_URL}/images/cloud.png`} className="cloud2" alt="雲" />
+          <img src={`${process.env.PUBLIC_URL}/images/cloud.png`} className="cloud3" alt="雲" />
+          <img src={`${process.env.PUBLIC_URL}/images/weekly_tasks.png`} className="weekly_tasks" alt="每週任務" />
+          <img src={`${process.env.PUBLIC_URL}/images/daily-tasks.png`} className="daily-tasks" alt="每日任務" />
+          <img src={`${process.env.PUBLIC_URL}/images/daily-tasks.png`} className="daily-tasks2" alt="每日任務2" />
 
-          {/* 行事曆畫面 */}
-          {activePanel === "calendar" && (
-            <>
-              <img src={`${process.env.PUBLIC_URL}/images/background.jpg`} className="background" alt="背景" />
-              <img src={`${process.env.PUBLIC_URL}/images/advertising_billboard.png`} className="advertising_billboard" alt="廣告看板" />
-              <div className="calendar-in-board">
-                <CalendarPanel />
-              </div>
-            </>
-          )}
-
-          {/* 功能按鈕 - 只在全螢幕模式下可用 */}
+          {/* 功能按鈕（固定不變） */}
           <div className="button-wrapper index-1">
             <img
               src="/images/行事曆按鈕.png"
@@ -130,7 +135,31 @@ function App() {
             <img src="/images/商城按鈕.png" className="button" alt="按鈕4" onClick={() => setActivePanel("shop")} />
           </div>
           <div className="button-wrapper index-5">
-            <img src="/images/設定按鈕.png" className="button" alt="按鈕5" onClick={() => setActivePanel("settings")} />
+            <img src="/images/設定按鈕.png" className="button" alt="按鈕5" onClick={() => {
+              console.log("設定按鈕被點擊");
+              setActivePanel((prev) => {
+                const next = prev === "settings" ? "main" : "settings";
+                console.log("activePanel set to", next);
+                return next;
+              });
+            }} />
+          </div>
+
+          {/* 主內容區塊（根據 activePanel 切換） */}
+          <div className="main-content">
+            {activePanel === "main" && null /* 或 MainPanel 元件 */}
+            {activePanel === "calendar" && (
+              <div className="calendar-in-board">
+                <CalendarPanel />
+              </div>
+            )}
+            {activePanel === "start" && (
+              <ExercisePanel onClose={() => setActivePanel("main")} autoPlayVideo={true} />
+            )}
+            {activePanel === "settings" && (
+              <SettingsPanel onClose={() => setActivePanel("main")} />
+            )}
+            {/* 其他主內容... */}
           </div>
         </>
       )}

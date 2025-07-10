@@ -1,0 +1,236 @@
+/* SettingsPanel 專用彈窗樣式
+   這是設定面板的外層彈窗，控制整個設定視窗的寬度、圓角、陰影等外觀。 */
+.settings-panel-modal-content {
+  background-color: transparent; /* 外層背景透明，讓內層內容顯示 */
+  color: #333333; /* 主要文字顏色 */
+  padding: 0; /* 外層不留白 */
+  border-radius: 0; /* 無圓角，外觀方正 */
+  width: 1200px; /* 彈窗寬度，建議依需求調整 */
+  max-width: 1200px; /* 最大寬度，避免超出螢幕 */
+  box-shadow: none; /* 無陰影 */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* 字型 */
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* 設定面板內容區域
+   這是表單的主要區塊，控制背景、邊框、內距、排版、欄數與高度。 */
+.settings-content-area {
+  background-color: #e6c4ad; /* 米色背景 */
+  border: 1.5px solid #c2a28e; /* 淺棕色邊框 */
+  border-top: none; /* 上方無邊框，與標題列連接 */
+  padding: 25px; /* 內距，讓內容不貼邊 */
+  box-shadow: inset 0 0 8px rgba(194, 162, 142, 0.2); /* 內陰影，增加層次感 */
+  display: grid; /* 使用 CSS Grid 排版 */
+  grid-template-columns: 1fr 1fr; /* 兩欄等寬 */
+  gap: 18px 25px; /* 欄位間距 */
+  max-width: 100%; /* 最寬不超過外層 */
+  box-sizing: border-box; /* 包含 padding/border */
+  height: 600px;
+}
+
+/* 設定面板主內容外層，置中與上方間距 */
+.settings-panel-main-content {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 215px;
+  z-index: 100;
+}
+
+/* 標題樣式，讓標題更明顯 */
+.settings-panel-modal-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* 表單群組，每個欄位的包裝區塊 */
+.settings-panel-modal-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+/* 標籤樣式，讓欄位名稱更明顯 */
+.settings-panel-modal-form-group label {
+  font-weight: 600;
+  color: #7a5c48;
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+
+/* 輸入框與下拉選單的基本樣式 */
+.settings-panel-modal-form-group input,
+.settings-panel-modal-form-group select {
+  padding: 10px 14px;
+  border: 2px solid rgba(194, 162, 142, 0.3);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #7a5c48;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 輸入框/下拉選單聚焦時的效果 */
+.settings-panel-modal-form-group input:focus,
+.settings-panel-modal-form-group select:focus {
+  outline: none;
+  border-color: #7a5c48;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(122, 92, 72, 0.1);
+  transform: translateY(-1px);
+}
+
+/* 輸入框/下拉選單滑鼠移入時的效果 */
+.settings-panel-modal-form-group input:hover,
+.settings-panel-modal-form-group select:hover {
+  border-color: rgba(122, 92, 72, 0.5);
+}
+
+/* 美化 select 下拉箭頭 */
+.settings-panel-modal-form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a5c48' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+  padding-right: 35px;
+}
+
+/* 儲存/取消按鈕區塊，置中排列 */
+.settings-panel-modal-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(194, 162, 142, 0.5);
+}
+
+/* 按鈕基本樣式 */
+.settings-panel-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+/* 取消按鈕樣式 */
+.settings-panel-btn-cancel {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.settings-panel-btn-cancel:hover {
+  background-color: #e0e0e0;
+}
+
+/* 儲存按鈕樣式（漸層、陰影） */
+.settings-panel-btn-save {
+  background: linear-gradient(135deg, #f2dac8 0%, #dbbc9f 100%);
+  color: #7a5c48;
+  border: 2px solid #c2a28e;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(194, 162, 142, 0.3);
+}
+
+.settings-panel-btn-save:hover {
+  background: linear-gradient(135deg, #dbbc9f 0%, #c2a28e 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(194, 162, 142, 0.3);
+}
+
+.settings-panel-btn-save:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(194, 162, 142, 0.3);
+}
+
+/* 讓某些表單項目橫跨兩欄（如工作強度） */
+.settings-panel-modal-form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* 表單區塊標題樣式 */
+.form-section-title {
+  grid-column: 1 / -1;
+  font-size: 16px;
+  font-weight: 600;
+  color: #7a5c48;
+  margin: 0;
+  padding-bottom: 0;
+  border-bottom: 1.5px solid #c2a28e;
+}
+
+/* 設定面板頂部區塊（含標題列） */
+.settings-panel-top {
+  position: relative;
+}
+
+/* 標題列樣式，仿照行事曆 */
+.settings-panel-title-bar {
+  width: 100%;
+  height: 55px;
+  background-color: #e6c4ad;
+  border: 1.5px solid #c2a28e;
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 15px;
+  position: relative;
+  box-sizing: border-box;
+  margin-bottom: 0;
+}
+
+/* 標題列下方裝飾線 */
+.settings-panel-title-bar::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: -1.5px;
+  right: -1.5px;
+  height: 1.5px;
+  background-color: #c2a28e;
+  z-index: 1;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.tab-button {
+  margin-top: 10px;
+  background-color: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px 8px 0 0;
+  font-weight: bold;
+  color: #7a5c48;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.tab-button.active {
+  background-color: #f2dac8;
+  border: 1px solid #c2a28e;
+  border-bottom: none;
+}
+
+.required-mark {
+  color: red;
+  margin-left: 4px;
+  font-weight: bold;
+}
