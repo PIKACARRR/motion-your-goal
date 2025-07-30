@@ -9,7 +9,6 @@ export default function CharacterWithResponsivePosition({ model = 'v3', position
   const gltf = useLoader(GLTFLoader, `/models/${model}.glb`)
   
   useEffect(() => {
-    console.log("載入模型", model, gltf.scene)
     if (gltf.animations && gltf.animations.length > 0) {
       mixer.current = new AnimationMixer(gltf.scene)
       const action = mixer.current.clipAction(gltf.animations[0])

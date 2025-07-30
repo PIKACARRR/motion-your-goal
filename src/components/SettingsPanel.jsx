@@ -1,9 +1,11 @@
+
 import React, { useState } from "react";
 import "../style/SettingsPanel.css";
 import { toast } from 'react-toastify';
 
-export default function SettingsPanel({ onClose = () => {} }) {
-  console.log("SettingsPanel rendered");
+export default function SettingsPanel({ onClose = () => {}, globalAccessToken }) {
+  // 只需要 accessToken 判斷是否登入
+  const accessToken = globalAccessToken;
   const [form, setForm] = useState({
     age: "",
     gender: "",
@@ -22,6 +24,10 @@ export default function SettingsPanel({ onClose = () => {} }) {
   const isBasicInfoFilled = form.age && form.gender && form.height && form.weight;
 
   const handleSave = () => {
+    if (!accessToken) {
+      toast.warn('請先登入 Google 才能儲存設定！');
+      return;
+    }
     if (!isBasicInfoFilled) {
       toast.error('資料尚未完成填寫');
       return;

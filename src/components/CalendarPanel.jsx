@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "../style/CalendarPanel.css";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function CalendarPanel() {
+export default function CalendarPanel({ globalAccessToken }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState({});
   const [showInput, setShowInput] = useState(false);
@@ -13,51 +13,7 @@ export default function CalendarPanel() {
   const [startTime, setStartTime] = useState("10:00");
   const [endTime, setEndTime] = useState("11:00");
   const [isEditing, setIsEditing] = useState(false);
-
-  const [accessToken, setAccessToken] = useState(null);
-  const [userName, setUserName] = useState(null);
-  const tokenClient = useRef(null);
-
-  // ✅ 初始化 Google Token Client
-  useEffect(() => {
-    const token = localStorage.getItem("google_access_token");
-    const name = localStorage.getItem("google_user_name");
-    if (token) setAccessToken(token);
-    if (name) setUserName(name);
-
-    /* global google */
-    tokenClient.current = window.google.accounts.oauth2.initTokenClient({
-      client_id: "164779046247-32plpf686mbgasdick4hhvp5bh8aj3k2.apps.googleusercontent.com",
-      scope: "https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/userinfo.profile",
-      prompt: "consent", // ✅ 加這個非常重要！
-      callback: async (tokenResponse) => {
-        console.log("📥 拿到的 token response：", tokenResponse);
-        setAccessToken(tokenResponse.access_token);
-        localStorage.setItem("google_access_token", tokenResponse.access_token);
-
-        const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-        });
-        const user = await res.json();
-        setUserName(user.name);
-        localStorage.setItem("google_user_name", user.name);
-        toast.success(`登入成功：${user.name}`);
-      },
-});
-
-  }, []);
-
-  const handleLogin = () => {
-    tokenClient.current.requestAccessToken();
-  };
-
-  const handleLogout = () => {
-    setAccessToken(null);
-    setUserName(null);
-    localStorage.removeItem("google_access_token");
-    localStorage.removeItem("google_user_name");
-    toast.info("已登出");
-  };
+  const accessToken = globalAccessToken;
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -133,7 +89,6 @@ export default function CalendarPanel() {
       });
 
       const result = await res.json();
-      console.log("📥 Google API 回傳：", result);
 
       if (res.ok) {
         setEvents((prev) => ({
@@ -177,19 +132,6 @@ export default function CalendarPanel() {
 
   return (
     <div className="calendar-container">
-      <ToastContainer position="bottom-right" autoClose={3000} />
-      {/* 登入區塊 */}
-      <div style={{ position: "absolute", top: -45, right: 200, zIndex: 9999 }}>
-        {!accessToken ? (
-          <button onClick={handleLogin} style={loginStyle}>登入 Google</button>
-        ) : (
-          <div className="login-status">
-            ✅ {userName} 已登入
-            <button onClick={handleLogout} className="logout-btn">登出</button>
-          </div>
-        )}
-      </div>
-
       <div className="calendar-frame">
         <div className="calendar-top">
           <div className="calendar-title-bar">
@@ -271,13 +213,5 @@ export default function CalendarPanel() {
   );
 }
 
-const loginStyle = {
-  backgroundColor: "#4285f4",
-  color: "#fff",
-  padding: "6px 12px",
-  borderRadius: "6px",
-  border: "none",
-  fontWeight: "bold",
-  cursor: "pointer",
-};
+
 

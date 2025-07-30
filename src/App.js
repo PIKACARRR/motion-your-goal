@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import CalendarPanel from "./components/CalendarPanel";
 import SettingsPanel from "./components/SettingsPanel";
 import ExercisePanel from './components/ExercisePanel';
+import GoogleAuthBar from './components/GoogleAuthBar';
 import "./style/App.css"; // 引入 CSS 檔案
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +10,46 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [activePanel, setActivePanel] = useState("main");
+  
+  // 🔥 全域登入狀態管理
+  const [globalAccessToken, setGlobalAccessToken] = useState(null);
+  const [globalUserName, setGlobalUserName] = useState(null);
+
+  // 🔥 全域檢查登入狀態
+  useEffect(() => {
+    const checkGlobalAuthStatus = () => {
+      const token = localStorage.getItem("google_access_token");
+      const name = localStorage.getItem("google_user_name");
+      
+      // 只有當狀態真的不同時才更新，避免不必要的重新渲染
+      if (token !== globalAccessToken) {
+        setGlobalAccessToken(token);
+      }
+      if (name !== globalUserName) {
+        setGlobalUserName(name);
+      }
+    };
+
+    // 初始檢查
+    checkGlobalAuthStatus();
+    
+    // 監聽 localStorage 變化
+    const handleStorageChange = (e) => {
+      if (e.key === "google_access_token" || e.key === "google_user_name") {
+        checkGlobalAuthStatus();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // 定期檢查（防止跨頁面狀態不同步）
+    const interval = setInterval(checkGlobalAuthStatus, 2000); // 改為每2秒檢查一次，減少頻率
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [globalAccessToken, globalUserName]); // 加入依賴，當狀態改變時重新檢查
 
   const enterFullScreen = () => {
     const doc = document.documentElement;
@@ -64,13 +105,20 @@ function App() {
     };
   }, []);
 
-  // 除錯用：顯示圖片路徑
-  const backgroundImagePath = `${process.env.PUBLIC_URL}/images/fullscreen_background.jpg`;
-  console.log("背景圖片路徑:", backgroundImagePath);
-
   return (
     <div className="App">
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      <ToastContainer 
+        position="bottom-right" 
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        limit={3}
+      />
       {/* 全螢幕前的遮罩和按鈕 */}
       {!isFullScreen && (
         <div
@@ -96,6 +144,14 @@ function App() {
         </div>
       )}
 
+      {/* Google 登入/登出區塊（右上角，永遠存在） */}
+      <GoogleAuthBar
+        globalAccessToken={globalAccessToken}
+        globalUserName={globalUserName}
+        setGlobalAccessToken={setGlobalAccessToken}
+        setGlobalUserName={setGlobalUserName}
+      />
+
       {/* 只有在全螢幕模式下才顯示主要內容 */}
       {isFullScreen && (
         <>
@@ -104,8 +160,6 @@ function App() {
             src="/images/fullscreen_background.jpg" 
             className="background" 
             alt="背景"
-            onLoad={() => console.log("背景圖片載入成功")}
-            onError={() => console.log("背景圖片載入失敗")}
           />
           <img src="/images/background_cat.gif" className="background_cat" alt="背景貓咪" />
           <img src={`${process.env.PUBLIC_URL}/images/advertising_billboard.png`} className="advertising_billboard" alt="廣告看板" />
@@ -122,7 +176,12 @@ function App() {
               src="/images/行事曆按鈕.png"
               className="button"
               alt="行事曆"
-              onClick={() => setActivePanel((prev) => (prev === "calendar" ? "main" : "calendar"))}
+              onClick={() => {
+                setActivePanel((prev) => {
+                  const next = prev === "calendar" ? "main" : "calendar";
+                  return next;
+                });
+              }}
             />
           </div>
           <div className="button-wrapper index-2">
@@ -136,10 +195,8 @@ function App() {
           </div>
           <div className="button-wrapper index-5">
             <img src="/images/設定按鈕.png" className="button" alt="按鈕5" onClick={() => {
-              console.log("設定按鈕被點擊");
               setActivePanel((prev) => {
                 const next = prev === "settings" ? "main" : "settings";
-                console.log("activePanel set to", next);
                 return next;
               });
             }} />
@@ -150,14 +207,19 @@ function App() {
             {activePanel === "main" && null /* 或 MainPanel 元件 */}
             {activePanel === "calendar" && (
               <div className="calendar-in-board">
-                <CalendarPanel />
+                <CalendarPanel 
+                  globalAccessToken={globalAccessToken}
+                />
               </div>
             )}
             {activePanel === "start" && (
               <ExercisePanel onClose={() => setActivePanel("main")} autoPlayVideo={true} />
             )}
             {activePanel === "settings" && (
-              <SettingsPanel onClose={() => setActivePanel("main")} />
+              <SettingsPanel 
+                onClose={() => setActivePanel("main")} 
+                globalAccessToken={globalAccessToken}
+              />
             )}
             {/* 其他主內容... */}
           </div>
