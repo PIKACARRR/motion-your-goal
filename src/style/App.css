@@ -1,8 +1,11 @@
+html {
+  font-size: 16px;
+}
 /* 全域通用設定，防止選取與拖曳 */
 * {
   user-select: none;
   -webkit-user-drag: none;
-}
+} 
 
 /* 雲朵動畫 keyframes */
 @keyframes moveCloud {
@@ -34,16 +37,6 @@ html {
   z-index: 0;
 }
 
-/* 右下角貓咪裝飾圖 */
-.background_cat {
-  position: fixed;
-  bottom: -45px;
-  right: 80px;
-  width: 25%;
-  z-index: 1000;
-  object-fit: cover;
-}
-
 /* 雲朵裝飾圖（含動畫） */
 .cloud,
 .cloud2,
@@ -69,57 +62,71 @@ html {
 /* 廣告看板裝飾圖 */
 .advertising_billboard {
   position: fixed;
-  top: 20%;
-  left: 47%;
-  transform: translate(-50%, -32%);
-  width: 120vw;
+  top: 12vh;
+  left: 50vw;
+  transform: translate(-52.5%, -25%);
+  width: 110rem;
+  height: auto;
   z-index: 10;
 }
 
 /* 每週任務裝飾圖 */
-.weekly_tasks {
-  position: absolute;
-  top: 20%;
-  left: 70%;
-  transform: translate(-50%, 30%);
-  width: 15%;
-  z-index: 10;
-}
 
-/* 每日任務裝飾圖 */
-.daily-tasks {
-  position: absolute;
-  top: 20%;
-  left: 30%;
-  transform: translate(-50%, 30%);
-  width: 15%;
+.task-btn {
+  width: 10rem;
+  height: 14rem;
+  margin: 0 2rem;
   z-index: 10;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: transform 0.1s;
+  position: static;
+  background-color: transparent;
 }
-.daily-tasks2 {
-  position: absolute;
-  top: 20%;
-  left: 40%;
-  transform: translate(-50%, 30%);
-  width: 15%;
-  z-index: 10;
+.task-btn:active {
+  transform: scale(0.96);
 }
 
 /* 功能按鈕外層包裝，絕對定位 */
-.button-wrapper {
+/* 主面板按鈕區 flex 排版 */
+.button-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
   position: absolute;
-  top: 20%;
-  width: 8vw;
-  z-index: 10;
+  top:  13rem; /* 依需求調整 */
+  left: 22.5rem; /* 依需求調整 */
+  margin-top: 0;
 }
-.index-1 { left: 20%; transform: translate(30%, 30%); }
-.index-2 { left: 35%; transform: translate(-10%, 30%); }
-.index-3 { left: 50%; transform: translate(-50%, 30%); }
-.index-4 { left: 60%; transform: translate(-25%, 30%); }
-.index-5 { left: 70%; transform: translate(-8%, 30%); }
+
+/* 功能按鈕容器，控制寬度與對齊 */
+.button-wrapper {
+  width: 7rem;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* 任務卡片區 flex 排版 */
+.task-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+  position: absolute;
+  margin-top: 17rem;
+  left: 25rem;         
+}
 
 /* 功能按鈕圖片樣式 */
 .button {
   width: 100%;
+  height: auto;
   transition: transform 0.1s ease;
   transform-origin: center center;
   cursor: pointer;
@@ -224,11 +231,9 @@ html {
 }
 
 .main-content {
-  min-height: 600px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+min-height: 600px;
+display: flex;
+justify-content: center;
+align-items: flex-start;
+position: relative;
 }
-
-/* --- 以下為 my-new-project/src/App.css 合併 --- */
-/* 整個畫面只會有一個 main-stage，所有元素都以它為基準 */

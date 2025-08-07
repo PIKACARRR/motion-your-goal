@@ -5,8 +5,7 @@
   color: #333333; /* 主要文字顏色 */
   padding: 0; /* 外層不留白 */
   border-radius: 0; /* 無圓角，外觀方正 */
-  width: 1200px; /* 彈窗寬度，建議依需求調整 */
-  max-width: 1200px; /* 最大寬度，避免超出螢幕 */
+  width: 56.3vw; /* 彈窗寬度，建議依需求調整 */ /* 最大寬度，避免超出螢幕 */
   box-shadow: none; /* 無陰影 */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* 字型 */
   display: flex;
@@ -20,14 +19,14 @@
   background-color: #e6c4ad; /* 米色背景 */
   border: 1.5px solid #c2a28e; /* 淺棕色邊框 */
   border-top: none; /* 上方無邊框，與標題列連接 */
-  padding: 25px; /* 內距，讓內容不貼邊 */
+  padding: 23px; /* 內距，讓內容不貼邊 */
   box-shadow: inset 0 0 8px rgba(194, 162, 142, 0.2); /* 內陰影，增加層次感 */
   display: grid; /* 使用 CSS Grid 排版 */
   grid-template-columns: 1fr 1fr; /* 兩欄等寬 */
   gap: 18px 25px; /* 欄位間距 */
-  max-width: 100%; /* 最寬不超過外層 */
+  max-width: 100%; /* 最寬不超過外層 */ 
   box-sizing: border-box; /* 包含 padding/border */
-  height: 600px;
+  height: 51.2vh;
 }
 
 /* 設定面板主內容外層，置中與上方間距 */
@@ -35,7 +34,7 @@
   position: relative;
   display: flex;
   justify-content: center;
-  margin-top: 215px;
+  margin-top: 275px;
   z-index: 100;
 }
 
@@ -54,23 +53,22 @@
   gap: 0px;
 }
 
-/* 標籤樣式，讓欄位名稱更明顯 */
+/* 標籤樣式，讓欄位名稱更明顯(年齡性別等) */
 .settings-panel-modal-form-group label {
   font-weight: 600;
   color: #7a5c48;
-  font-size: 15px;
-  margin-bottom: 5px;
+  font-size: 12px;
 }
 
 /* 輸入框與下拉選單的基本樣式 */
 .settings-panel-modal-form-group input,
 .settings-panel-modal-form-group select {
-  padding: 10px 14px;
+  padding: 6px 14px;
   border: 2px solid rgba(194, 162, 142, 0.3);
   border-radius: 8px;
   background-color: rgba(255, 255, 255, 0.9);
   color: #7a5c48;
-  font-size: 14px;
+  font-size: 12px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   width: 100%;
@@ -109,14 +107,14 @@
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-top: 10px;
+  margin-top: 1px;
   padding-top: 15px;
   border-top: 1px solid rgba(194, 162, 142, 0.5);
 }
 
-/* 按鈕基本樣式 */
+/* 儲存按鈕基本樣式 */
 .settings-panel-btn {
-  padding: 12px 24px;
+  padding: 4px 18px;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -163,7 +161,7 @@
 /* 表單區塊標題樣式 */
 .form-section-title {
   grid-column: 1 / -1;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 600;
   color: #7a5c48;
   margin: 0;
@@ -179,7 +177,7 @@
 /* 標題列樣式，仿照行事曆 */
 .settings-panel-title-bar {
   width: 100%;
-  height: 55px;
+  height: 35px;
   background-color: #e6c4ad;
   border: 1.5px solid #c2a28e;
   border-bottom: none;
@@ -211,10 +209,10 @@
 }
 
 .tab-button {
-  margin-top: 10px;
+  margin-top: 6px;
   background-color: transparent;
   border: none;
-  padding: 8px 12px;
+  padding: 1px 12px;
   border-radius: 8px 8px 0 0;
   font-weight: bold;
   color: #7a5c48;

@@ -3,7 +3,7 @@
   position: relative;
   display: flex;
   justify-content: center;
-  margin-top:270px; /* 控制行事曆區塊與上方距離 */
+  margin-top:310px; /* 控制行事曆區塊與上方距離 */
   z-index: 100;
 }
 
@@ -11,7 +11,7 @@
 .calendar-frame {
   display: flex;
   flex-direction: column;
-  width: 1200px; /* 行事曆整體寬度，可依背景格子調整 */
+  width: 56.3vw; /* 行事曆整體寬度，可依背景格子調整 */
 }
 
 /* 行事曆上方區塊，預留標題列空間 */
@@ -24,7 +24,7 @@
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 55px;
+  height: 35px;
   background-color: #e6c4ad; /* 奶茶色背景 */
   border: 1.5px solid #c2a28e; /* 深奶茶色邊框 */
   border-bottom: none; /* 底部無邊框 */
@@ -73,8 +73,8 @@
   background-color: #f2dac8; /* 更淺的奶茶色 */
   border: 2px solid #c2a28e;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -97,10 +97,10 @@
 
 /* 行事曆內容外框，含所有格子 */
 .calendar-board {
-  height: 600px; /* 行事曆內容高度 */
+  height: 442px; /* 行事曆內容高度 */
   background-color: #e6c4ad; /* 奶茶色背景 */
   border: 1.5px solid #c2a28e; /* 深奶茶色邊框 */
-  padding: 15px; /* 內距 */
+  padding: 8px; /* 內距 */
   box-shadow: inset 0 0 8px rgba(194, 162, 142, 0.2); /* 內陰影 */
 }
 
@@ -113,7 +113,7 @@
   text-align: center;
 }
 
-/* 星期標籤格子 */
+/* 星期幾的標籤格子 */
 .weekday {
   text-align: center;
   font-weight: bold;
@@ -163,7 +163,7 @@
   background-color: transparent;
 }
 
-/* 已登入狀態區塊 */
+/*已登入狀態區塊*/
 .login-status {
   display: flex;
   align-items: center;

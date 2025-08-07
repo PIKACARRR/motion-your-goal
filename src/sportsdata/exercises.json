@@ -1,0 +1,72 @@
+[
+  {
+    "id": "run",
+    "name": "慢跑",
+    "duration": "30 分鐘",
+    "intensity": "中",
+    "description": "慢跑是一種有氧運動，有助於提升心肺功能與燃燒脂肪。"
+  },
+  {
+    "id": "pushup",
+    "name": "伏地挺身",
+    "duration": "15 分鐘",
+    "intensity": "高",
+    "description": "伏地挺身能訓練胸肌、三頭肌與核心肌群。"
+  },
+  {
+    "id": "yoga",
+    "name": "瑜珈",
+    "duration": "20 分鐘",
+    "intensity": "低",
+    "description": "瑜珈有助於伸展肌肉、放鬆身心並提升柔軟度。"
+  },
+  {
+    "id": "cycling",
+    "name": "騎自行車",
+    "duration": "40 分鐘",
+    "intensity": "中",
+    "description": "騎自行車能有效鍛鍊下肢肌群並提升心肺耐力。"
+  },
+  {
+    "id": "plank",
+    "name": "棒式撐體",
+    "duration": "10 分鐘",
+    "intensity": "高",
+    "description": "棒式撐體能強化核心肌群與全身穩定性。"
+  },
+  {
+    "id": "stretch",
+    "name": "全身伸展",
+    "duration": "15 分鐘",
+    "intensity": "低",
+    "description": "全身伸展有助於預防運動傷害並促進血液循環。"
+  },
+  {
+    "id": "jumping_jack",
+    "name": "開合跳",
+    "duration": "10 分鐘",
+    "intensity": "中",
+    "description": "開合跳是一種全身性的有氧運動，能提升爆發力與協調性。"
+  },
+  {
+    "id": "swim",
+    "name": "游泳",
+    "duration": "30 分鐘",
+    "intensity": "中",
+    "description": "游泳能鍛鍊全身肌群並減少關節壓力。"
+  },
+  {
+    "id": "tai_chi",
+    "name": "太極",
+    "duration": "25 分鐘",
+    "intensity": "低",
+    "description": "太極有助於身心放鬆與平衡感提升。"
+  },
+  {
+    "id": "mountain_climber",
+    "name": "登山者式",
+    "duration": "12 分鐘",
+    "intensity": "高",
+    "description": "登山者式能強化核心與下肢肌群，提升心肺功能。"
+  }
+]
