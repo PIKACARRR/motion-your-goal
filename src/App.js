@@ -43,6 +43,8 @@ function App() {
   const [globalUserName, setGlobalUserName] = useState(null);
   // 每週登入天數
   const [weekLoginDays, setWeekLoginDays] = useState(0);
+  // 所有登入日期（YYYY-MM-DD）
+  const [allLoginDays, setAllLoginDays] = useState([]);
 
   // 🔥 全域檢查登入狀態 + 每週登入累計
   useEffect(() => {
@@ -80,8 +82,20 @@ function App() {
         localStorage.setItem(loginKey, JSON.stringify(loginDays));
       }
       setWeekLoginDays(loginDays.length);
+
+      // 只收集目前帳號的登入日期
+      const allKeys = Object.keys(localStorage).filter(k => k.startsWith(`weekLogin_${name}_`));
+      let allDays = [];
+      allKeys.forEach(k => {
+        try {
+          const arr = JSON.parse(localStorage.getItem(k) || '[]');
+          allDays = allDays.concat(arr);
+        } catch {}
+      });
+      setAllLoginDays(allDays);
     } else {
       setWeekLoginDays(0);
+      setAllLoginDays([]);
     }
 
     // 監聽 localStorage 變化
@@ -358,6 +372,7 @@ function App() {
                     globalAccessToken={globalAccessToken}
                     globalUserName={globalUserName}
                     globalUserEmail={globalUserEmail}
+                    loginDays={allLoginDays}
                   />
                 </div>
               )}

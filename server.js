@@ -12,6 +12,11 @@ app.use(express.json());
 
 // --------- 一般存檔 (savedata) ---------
 app.post('/save-data', (req, res) => {
+  console.log('=== 後端收到儲存請求 ===');
+  console.log('req.body:', req.body);
+  console.log('googleAccount:', req.body.googleAccount);
+  console.log('========================');
+
   // 判斷是否有 googleUserName 來決定存哪個資料夾
   const body = req.body;
   const { dateKey, googleUserName } = body;

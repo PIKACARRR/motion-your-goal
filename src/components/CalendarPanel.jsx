@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "../style/CalendarPanel.css";
 import { toast } from "react-toastify";
@@ -6,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const API_BASE = "http://localhost:5000";
 
-export default function CalendarPanel({ globalAccessToken, globalUserName, globalUserEmail }) {
+export default function CalendarPanel({ globalAccessToken, globalUserName, globalUserEmail, loginDays = [] }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState({});
   const [showInput, setShowInput] = useState(false);
@@ -267,11 +268,19 @@ export default function CalendarPanel({ globalAccessToken, globalUserName, globa
             {calendarGrid().map((day, index) => {
               const key = getDateKey(day);
               const event = events[key];
+              // 判斷該天是否有登入
+              const isLogin = loginDays.includes(key);
               return (
-                <div key={index} className={`day-box ${day === null ? "empty" : ""}`} onClick={() => day && handleDayClick(day)}>
+                <div key={index} className={`day-box ${day === null ? "empty" : ""}`} onClick={() => day && handleDayClick(day)} style={{ position: 'relative' }}>
                   {day !== null && (
                     <div style={{ textAlign: "center" }}>
                       <div>{day}</div>
+                      {/* 只顯示有登入的勾勾 */}
+                      {isLogin && (
+                        <div style={{ position: 'absolute', top: -5, right: 0 }}>
+                          <FaCheckCircle color="green" size={18} title="已登入" />
+                        </div>
+                      )}
                       {event && (
                         <div className="day-box-content" title={event.summary}>
                           {event.summary}

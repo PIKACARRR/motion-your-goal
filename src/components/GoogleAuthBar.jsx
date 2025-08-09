@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from "react";
 import { toast } from 'react-toastify';
 import '../style/SettingsPanel.css';
@@ -23,7 +22,8 @@ export default function GoogleAuthBar({
         console.log('[GoogleAuthBar] Google OAuth2 available, initializing tokenClient');
         tokenClient.current = window.google.accounts.oauth2.initTokenClient({
           client_id: "164779046247-32plpf686mbgasdick4hhvp5bh8aj3k2.apps.googleusercontent.com",
-          scope: "https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/userinfo.profile",
+          // 🔥 增加更多權限範圍
+          scope: "https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid",
           prompt: "consent",
           callback: async (tokenResponse) => {
             console.log('[GoogleAuthBar] tokenClient callback', tokenResponse);
@@ -38,18 +38,60 @@ export default function GoogleAuthBar({
             }
             setGlobalAccessToken(tokenResponse.access_token);
             localStorage.setItem("google_access_token", tokenResponse.access_token);
+            
             try {
               const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
                 headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
               });
               const user = await res.json();
-              console.log('[GoogleAuthBar] userinfo response', user);
+              
+              console.log('=== Google 使用者資訊詳細 ===');
+              console.log('完整 user 物件:', user);
+              console.log('user.name:', user.name);
+              console.log('user.email:', user.email);
+              console.log('user.sub (Google ID):', user.sub);
+              console.log('user.given_name:', user.given_name);
+              console.log('user.family_name:', user.family_name);
+              console.log('============================');
+              
               if (isMounted) {
                 setGlobalUserName(user.name);
                 localStorage.setItem("google_user_name", user.name);
-                if (setGlobalUserEmail && user.email) {
-                  setGlobalUserEmail(user.email);
-                  localStorage.setItem("google_user_email", user.email);
+                
+                // 🔥 多重策略取得唯一識別
+                let userIdentifier = null;
+                
+                if (user.email) {
+                  // 策略 1: 使用 email
+                  userIdentifier = user.email;
+                  console.log('✅ 使用 email 作為識別:', userIdentifier);
+                } else if (user.sub) {
+                  // 策略 2: 使用 Google ID + 部分名稱
+                  const safeName = user.name ? user.name.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '') : 'user';
+                  userIdentifier = `${safeName}_${user.sub.slice(-8)}`;
+                  console.log('⚠️ email 為空，使用 Google ID:', userIdentifier);
+                } else {
+                  // 策略 3: 使用名稱 + 時間戳
+                  const safeName = user.name ? user.name.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '') : 'user';
+                  userIdentifier = `${safeName}_${Date.now()}`;
+                  console.log('⚠️ 無 email 和 ID，使用名稱+時間:', userIdentifier);
+                }
+                
+                if (setGlobalUserEmail && userIdentifier) {
+                  setGlobalUserEmail(userIdentifier);
+                  localStorage.setItem("google_user_email", userIdentifier);
+                  
+                  // 確認是否成功寫入
+                  setTimeout(() => {
+                    const savedEmail = localStorage.getItem("google_user_email");
+                    console.log('📄 localStorage 確認 identifier:', savedEmail);
+                  }, 100);
+                  
+                } else {
+                  console.error('❌ 無法設定用戶識別:', { 
+                    setGlobalUserEmail: !!setGlobalUserEmail, 
+                    userIdentifier 
+                  });
                 }
                 toast.success(`登入成功：${user.name}`);
               } else {
@@ -94,6 +136,7 @@ export default function GoogleAuthBar({
       toast.error("Google 登入服務未準備就緒，請稍後再試");
     }
   };
+  
   const handleLogout = () => {
     console.log('[GoogleAuthBar] handleLogout called');
     setGlobalAccessToken(null);
