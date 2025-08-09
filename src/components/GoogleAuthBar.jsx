@@ -7,7 +7,8 @@ export default function GoogleAuthBar({
   globalAccessToken,
   globalUserName,
   setGlobalAccessToken,
-  setGlobalUserName
+  setGlobalUserName,
+  setGlobalUserEmail // 新增 email setter
 }) {
   const accessToken = globalAccessToken;
   const userName = globalUserName;
@@ -46,6 +47,10 @@ export default function GoogleAuthBar({
               if (isMounted) {
                 setGlobalUserName(user.name);
                 localStorage.setItem("google_user_name", user.name);
+                if (setGlobalUserEmail && user.email) {
+                  setGlobalUserEmail(user.email);
+                  localStorage.setItem("google_user_email", user.email);
+                }
                 toast.success(`登入成功：${user.name}`);
               } else {
                 console.warn('[GoogleAuthBar] isMounted false after userinfo, return');
@@ -72,7 +77,7 @@ export default function GoogleAuthBar({
       isMounted = false;
       console.log('[GoogleAuthBar] useEffect cleanup, isMounted set to', isMounted);
     };
-  }, [setGlobalAccessToken, setGlobalUserName]);
+  }, [setGlobalAccessToken, setGlobalUserName, setGlobalUserEmail]);
 
   const handleLogin = () => {
     console.log('[GoogleAuthBar] handleLogin called, tokenClient.current:', tokenClient.current);
@@ -93,8 +98,10 @@ export default function GoogleAuthBar({
     console.log('[GoogleAuthBar] handleLogout called');
     setGlobalAccessToken(null);
     setGlobalUserName(null);
+    if (setGlobalUserEmail) setGlobalUserEmail(null);
     localStorage.removeItem("google_access_token");
     localStorage.removeItem("google_user_name");
+    localStorage.removeItem("google_user_email");
     toast.info("已登出");
   };
 

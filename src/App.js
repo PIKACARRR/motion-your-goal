@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import TaskModal from "./components/TaskModal";
-import exercises from "./sportsdata/exercises.json";
 import CalendarPanel from "./components/CalendarPanel";
 import SettingsPanel from "./components/SettingsPanel";
 import ExercisePanel from './components/ExercisePanel';
@@ -8,40 +7,19 @@ import GoogleAuthBar from './components/GoogleAuthBar';
 import "./style/App.css"; // 引入 CSS 檔案
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import TaskSelector from './components/TaskSelector';
 
 function App() {
   // Modal 狀態
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [taskModalContent, setTaskModalContent] = useState({ title: '', content: '' });
-
-  // 每日隨機任務（運動 id 陣列）
-  const [todayTasks, setTodayTasks] = useState([]);
-
-  // 產生一個根據日期固定的亂數種子
-  function seededRandom(seed) {
-    let x = Math.sin(seed) * 10000;
-    return x - Math.floor(x);
-  }
-
-  // 根據今天日期選出三個不同的運動
-  useEffect(() => {
-    const today = new Date();
-    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-    let arr = [...Array(exercises.length).keys()];
-    let selected = [];
-    let s = seed;
-    for (let i = 0; i < 3; i++) {
-      if (arr.length === 0) break;
-      s = Math.floor(seededRandom(s + i) * arr.length);
-      selected.push(arr[s]);
-      arr.splice(s, 1);
-    }
-    setTodayTasks(selected.map(idx => exercises[idx].id));
-  }, []);
+  // 移除每日/每週任務邏輯，交由 TaskSelector 元件管理
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [activePanel, setActivePanel] = useState("main");
   // 畫面縮放比例
   const [scale, setScale] = useState(1);
+  // Google 帳號 email 狀態
+  const [globalUserEmail, setGlobalUserEmail] = useState(null);
   // 監聽 ctrl+滾輪縮放
   useEffect(() => {
     const handleWheel = (e) => {
@@ -63,42 +41,100 @@ function App() {
   // 🔥 全域登入狀態管理
   const [globalAccessToken, setGlobalAccessToken] = useState(null);
   const [globalUserName, setGlobalUserName] = useState(null);
+  // 每週登入天數
+  const [weekLoginDays, setWeekLoginDays] = useState(0);
 
-  // 🔥 全域檢查登入狀態
+  // 🔥 全域檢查登入狀態 + 每週登入累計
   useEffect(() => {
-    const checkGlobalAuthStatus = () => {
-      const token = localStorage.getItem("google_access_token");
-      const name = localStorage.getItem("google_user_name");
-      
-      // 只有當狀態真的不同時才更新，避免不必要的重新渲染
-      if (token !== globalAccessToken) {
-        setGlobalAccessToken(token);
-      }
-      if (name !== globalUserName) {
-        setGlobalUserName(name);
-      }
-    };
+    // 取得今年第幾週
+    function getWeekNumber(date) {
+      const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+      const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+      // 週一為一週的開始
+      return Math.floor((pastDaysOfYear + firstDayOfYear.getDay() - 1) / 7) + 1;
+    }
 
-    // 初始檢查
-    checkGlobalAuthStatus();
-    
+    // 每次刷新都判斷一次登入
+    const token = localStorage.getItem("google_access_token");
+    const name = localStorage.getItem("google_user_name");
+    const email = localStorage.getItem("google_user_email");
+    if (token !== globalAccessToken) {
+      setGlobalAccessToken(token);
+    }
+    if (name !== globalUserName) {
+      setGlobalUserName(name);
+    }
+    if (email !== globalUserEmail) {
+      setGlobalUserEmail(email);
+    }
+
+    if (token && name) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const week = getWeekNumber(now);
+      const todayStr = now.toISOString().slice(0, 10);
+      const loginKey = `weekLogin_${name}_${year}_${week}`;
+      let loginDays = JSON.parse(localStorage.getItem(loginKey) || '[]');
+      if (!loginDays.includes(todayStr)) {
+        loginDays.push(todayStr);
+        localStorage.setItem(loginKey, JSON.stringify(loginDays));
+      }
+      setWeekLoginDays(loginDays.length);
+    } else {
+      setWeekLoginDays(0);
+    }
+
     // 監聽 localStorage 變化
     const handleStorageChange = (e) => {
       if (e.key === "google_access_token" || e.key === "google_user_name") {
-        checkGlobalAuthStatus();
+        // 只要帳號或 token 變化就再判斷一次
+        const token = localStorage.getItem("google_access_token");
+        const name = localStorage.getItem("google_user_name");
+        if (token && name) {
+          const now = new Date();
+          const year = now.getFullYear();
+          const week = getWeekNumber(now);
+          const todayStr = now.toISOString().slice(0, 10);
+          const loginKey = `weekLogin_${name}_${year}_${week}`;
+          let loginDays = JSON.parse(localStorage.getItem(loginKey) || '[]');
+          if (!loginDays.includes(todayStr)) {
+            loginDays.push(todayStr);
+            localStorage.setItem(loginKey, JSON.stringify(loginDays));
+          }
+          setWeekLoginDays(loginDays.length);
+        } else {
+          setWeekLoginDays(0);
+        }
       }
     };
-    
     window.addEventListener('storage', handleStorageChange);
-    
+
     // 定期檢查（防止跨頁面狀態不同步）
-    const interval = setInterval(checkGlobalAuthStatus, 2000); // 改為每2秒檢查一次，減少頻率
-    
+    const interval = setInterval(() => {
+      const token = localStorage.getItem("google_access_token");
+      const name = localStorage.getItem("google_user_name");
+      if (token && name) {
+        const now = new Date();
+        const year = now.getFullYear();
+        const week = getWeekNumber(now);
+        const todayStr = now.toISOString().slice(0, 10);
+        const loginKey = `weekLogin_${name}_${year}_${week}`;
+        let loginDays = JSON.parse(localStorage.getItem(loginKey) || '[]');
+        if (!loginDays.includes(todayStr)) {
+          loginDays.push(todayStr);
+          localStorage.setItem(loginKey, JSON.stringify(loginDays));
+        }
+        setWeekLoginDays(loginDays.length);
+      } else {
+        setWeekLoginDays(0);
+      }
+    }, 500);
+
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       clearInterval(interval);
     };
-  }, [globalAccessToken, globalUserName]); // 加入依賴，當狀態改變時重新檢查
+  }, [globalAccessToken, globalUserName, globalUserEmail]);
 
   const enterFullScreen = () => {
     const doc = document.documentElement;
@@ -199,6 +235,7 @@ function App() {
         globalUserName={globalUserName}
         setGlobalAccessToken={setGlobalAccessToken}
         setGlobalUserName={setGlobalUserName}
+        setGlobalUserEmail={setGlobalUserEmail}
       />
 
       {/* 只有在全螢幕模式下才顯示主要內容 */}
@@ -223,38 +260,55 @@ function App() {
             {/* 任務卡片區 flex 父層 */}
             <div className="task-row-wrapper">
               <div className="task-row">
-                {todayTasks.map((id, idx) => {
-                  const ex = exercises.find(e => e.id === id);
-                  if (!ex) return null;
-                  // 前兩個是每日任務，最後一個是每週任務
-                  const isWeekly = idx === 2;
-                  return (
-                    <button
-                      key={id}
-                      className="task-btn"
-                      style={{ backgroundImage: `url('/images/${isWeekly ? 'weekly_tasks' : 'daily-tasks'}.png')` }}
-                      onClick={() => {
-                        setTaskModalContent({
-                          title: ex.name,
-                          content: (
-                            <>
-                              <div><b>持續時間：</b> {ex.duration}</div>
-                              <div><b>強度：</b> {ex.intensity}</div>
-                              <div style={{ marginTop: 8 }}><b>介紹：</b> {ex.description}</div>
-                            </>
-                          )
-                        });
-                        setShowTaskModal(true);
-                      }}
-                    ></button>
-                  );
-                })}
+                {/* 任務卡片元件（每日/每週） */}
+                <TaskSelector
+                  onTaskClick={(ex) => {
+                    // 每週任務不顯示彈窗內容
+                    if (ex.isWeeklyTask) return;
+                    setTaskModalContent({
+                      title: ex.name,
+                      content: (
+                        <>
+                          <div><b>持續時間：</b> {ex.duration}</div>
+                          <div><b>強度：</b> {ex.intensity}</div>
+                          <div style={{ marginTop: 8 }}><b>介紹：</b> {ex.description}</div>
+                        </>
+                      )
+                    });
+                    setShowTaskModal(true);
+                  }}
+                  onWeeklyTaskClick={() => {
+                    setTaskModalContent({
+                      title: '本週累計登入天數',
+                      content: (
+                        <>
+                          <div style={{ width: '100%', height: '1.2rem', background: '#eee', borderRadius: '0.6rem', overflow: 'hidden', marginBottom: '0.7rem', boxShadow: '0 1px 4px #0001' }}>
+                            <div style={{
+                              width: `${Math.min(weekLoginDays,7)/7*100}%`,
+                              height: '100%',
+                              background: 'linear-gradient(90deg,#2563eb,#4f8cff)',
+                              borderRadius: '0.6rem',
+                              transition: 'width 0.5s',
+                            }}></div>
+                          </div>
+                          <div style={{ fontSize: '1.1rem', color: '#333' }}>{weekLoginDays} / 7 天</div>
+                          <div style={{ fontSize: '0.95rem', color: '#888', marginTop: '0.5rem' }}>每週一重置</div>
+                        </>
+                      )
+                    });
+                    setShowTaskModal(true);
+                  }}
+                />
       {/* 任務彈窗（獨立元件） */}
       <TaskModal
         show={showTaskModal}
         title={taskModalContent.title}
         content={taskModalContent.content}
         onClose={() => setShowTaskModal(false)}
+        onGoExercise={() => {
+          setShowTaskModal(false);
+          setActivePanel('start');
+        }}
       />
               </div>
             </div>
@@ -303,6 +357,7 @@ function App() {
                   <CalendarPanel 
                     globalAccessToken={globalAccessToken}
                     globalUserName={globalUserName}
+                    globalUserEmail={globalUserEmail}
                   />
                 </div>
               )}
@@ -313,6 +368,7 @@ function App() {
                 <SettingsPanel 
                   onClose={() => setActivePanel("main")} 
                   globalAccessToken={globalAccessToken}
+                  googleEmail={globalUserEmail}
                 />
               )}
               {/* 其他主內容... */}

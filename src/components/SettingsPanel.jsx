@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../style/SettingsPanel.css";
 import { toast } from "react-toastify";
 
-export default function SettingsPanel({ onClose = () => {}, globalAccessToken }) {
+export default function SettingsPanel({ onClose = () => {}, globalAccessToken, googleEmail = "" }) {
   // 取得登入用的 accessToken
   const accessToken = globalAccessToken;
 
@@ -15,6 +15,7 @@ export default function SettingsPanel({ onClose = () => {}, globalAccessToken })
     experience: "",
     intensity: "",
     workIntensity: "",
+    googleAccount: googleEmail, // 初始化時直接帶入 props
   });
 
   // 處理表單輸入變更
@@ -23,8 +24,10 @@ export default function SettingsPanel({ onClose = () => {}, globalAccessToken })
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 必填欄位判斷
-  const isBasicInfoFilled = form.age && form.gender && form.height && form.weight;
+  // 必填欄位判斷（所有欄位都必填）
+  const isAllInfoFilled =
+    form.age && form.gender && form.height && form.weight &&
+    form.experience && form.intensity && form.workIntensity;
 
   /** 🔹 計算 BMI */
   const calcBMI = (weight, height) => {
@@ -91,8 +94,8 @@ export default function SettingsPanel({ onClose = () => {}, globalAccessToken })
       return;
     }
 
-    // 2. 檢查必填資料
-    if (!isBasicInfoFilled) {
+    // 2. 檢查必填資料（所有欄位）
+    if (!isAllInfoFilled) {
       toast.error("資料尚未完成填寫");
       return;
     }
@@ -101,14 +104,17 @@ export default function SettingsPanel({ onClose = () => {}, globalAccessToken })
     const { bmi, bmiScore, ageScore, score } = calcScore();
 
     // 4. 準備要存的 JSON 資料
+    // 儲存時優先用 props 傳入的 googleEmail
     const saveData = {
       ...form,
+      googleAccount: googleEmail,
       bmi: bmi.toFixed(2), // 保留兩位小數
       bmiScore,
       ageScore,
       finalScore: score.toFixed(2),
       savedAt: new Date().toLocaleString(), // 存檔時間
     };
+    console.log('送出存檔資料', saveData);
 
     try {
       // 5. 呼叫後端 API，把資料寫入 savedata 資料夾
@@ -191,7 +197,9 @@ export default function SettingsPanel({ onClose = () => {}, globalAccessToken })
           <div className="form-section-title">運動相關</div>
 
           <div className="settings-panel-modal-form-group">
-            <label>運動經驗</label>
+            <label>
+              運動經驗{!form.experience && <span className="required-mark">*</span>}
+            </label>
             <select name="experience" value={form.experience} onChange={handleChange}>
               <option value="">請選擇</option>
               <option value="none">無</option>
@@ -202,7 +210,9 @@ export default function SettingsPanel({ onClose = () => {}, globalAccessToken })
           </div>
 
           <div className="settings-panel-modal-form-group">
-            <label>可承受運動強度</label>
+            <label>
+              可承受運動強度{!form.intensity && <span className="required-mark">*</span>}
+            </label>
             <select name="intensity" value={form.intensity} onChange={handleChange}>
               <option value="">請選擇</option>
               <option value="low">低</option>
@@ -212,7 +222,9 @@ export default function SettingsPanel({ onClose = () => {}, globalAccessToken })
           </div>
 
           <div className="settings-panel-modal-form-group full-width">
-            <label>工作強度</label>
+            <label>
+              工作強度{!form.workIntensity && <span className="required-mark">*</span>}
+            </label>
             <select name="workIntensity" value={form.workIntensity} onChange={handleChange}>
               <option value="">請選擇</option>
               <option value="sedentary">久坐</option>

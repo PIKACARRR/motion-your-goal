@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const API_BASE = "http://localhost:5000";
 
-export default function CalendarPanel({ globalAccessToken, globalUserName }) {
+export default function CalendarPanel({ globalAccessToken, globalUserName, globalUserEmail }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState({});
   const [showInput, setShowInput] = useState(false);
@@ -17,6 +17,8 @@ export default function CalendarPanel({ globalAccessToken, globalUserName }) {
   const [isEditing, setIsEditing] = useState(false);
   const accessToken = globalAccessToken;
   const userName = globalUserName;
+  // 優先使用 props 傳入的 email
+  const userEmail = globalUserEmail || localStorage.getItem("google_user_email");
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -69,6 +71,7 @@ export default function CalendarPanel({ globalAccessToken, globalUserName }) {
       endTime,
       savedAt: new Date().toLocaleString(),
       googleUserName: userName,
+      googleAccount: userEmail,
     };
 
     // 1. 本地端儲存
@@ -128,6 +131,7 @@ export default function CalendarPanel({ globalAccessToken, globalUserName }) {
           // ★ 用 Google API 回來的 event 更新本地存檔！
           const googleEvent = {
             ...eventData,
+            googleAccount: userEmail,
             id: result.id,
             summary: result.summary,
             htmlLink: result.htmlLink,
