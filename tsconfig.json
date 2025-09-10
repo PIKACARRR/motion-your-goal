@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+
+    "strict": true,
+    "skipLibCheck": true,
+
+    "noEmit": true,                 // 🔴 不輸出檔案 → 不會覆蓋任何 .js
+    "allowJs": false,               // 🔴 不處理 .js / .jsx
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": false   // 避免 ESM/CJS 嚴格報錯
+  },
+  "include": ["**/*.ts", "**/*.tsx"],        // 只檢查 TS/TSX（例如 SummaryBoard.tsx）
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.js",
+    "**/*.jsx"
+  ]
+}

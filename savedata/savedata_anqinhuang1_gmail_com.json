@@ -1,0 +1,15 @@
+{
+  "age": "22",
+  "gender": "male",
+  "height": "190",
+  "weight": "58",
+  "experience": "beginner",
+  "intensity": "medium",
+  "workIntensity": "light",
+  "googleAccount": "anqinhuang1@gmail.com",
+  "bmi": "16.07",
+  "bmiScore": 6,
+  "ageScore": 10,
+  "finalScore": "29.15",
+  "savedAt": "2025/9/10 下午2:26:40"
+}

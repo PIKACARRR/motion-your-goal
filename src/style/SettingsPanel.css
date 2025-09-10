@@ -5,7 +5,7 @@
   color: #333333; /* 主要文字顏色 */
   padding: 0; /* 外層不留白 */
   border-radius: 0; /* 無圓角，外觀方正 */
-  width: 56.3vw; /* 彈窗寬度，建議依需求調整 */ /* 最大寬度，避免超出螢幕 */
+  width: 37.7vw; /* 彈窗寬度，建議依需求調整 */ /* 最大寬度，避免超出螢幕 */
   box-shadow: none; /* 無陰影 */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* 字型 */
   display: flex;
@@ -26,7 +26,7 @@
   gap: 18px 25px; /* 欄位間距 */
   max-width: 100%; /* 最寬不超過外層 */ 
   box-sizing: border-box; /* 包含 padding/border */
-  height: 51.2vh;
+  height: 32.8vh;
 }
 
 /* 設定面板主內容外層，置中與上方間距 */

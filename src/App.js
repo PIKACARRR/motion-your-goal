@@ -1,13 +1,17 @@
+
+import SummaryBoardWithLocalSave from "./GamePanel/components/SummaryBoard"; 
+
 import React, { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom"; 
 import TaskModal from "./components/TaskModal";
 import CalendarPanel from "./components/CalendarPanel";
 import SettingsPanel from "./components/SettingsPanel";
-import ExercisePanel from './components/ExercisePanel';
-import GoogleAuthBar from './components/GoogleAuthBar';
-import "./style/App.css"; // 引入 CSS 檔案
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import TaskSelector from './components/TaskSelector';
+import GoogleAuthBar from "./components/GoogleAuthBar";
+import "./style/App.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import TaskSelector from "./components/TaskSelector";
+import GamePanelApp from "./GamePanel/App.jsx";
 
 function App() {
   // Modal 狀態
@@ -204,6 +208,12 @@ function App() {
     };
   }, []);
 
+  // 只顯示 GamePanelApp 畫面，其他內容完全不渲染
+  if (activePanel === "start") {
+    return <GamePanelApp onGoHome={() => setActivePanel("main")} />;
+  }
+
+  // 原本主畫面內容
   return (
     <div className="App">
       <ToastContainer 
@@ -376,9 +386,6 @@ function App() {
                   />
                 </div>
               )}
-              {activePanel === "start" && (
-                <ExercisePanel onClose={() => setActivePanel("main")} autoPlayVideo={true} />
-              )}
               {activePanel === "settings" && (
                 <SettingsPanel 
                   onClose={() => setActivePanel("main")} 
@@ -386,7 +393,11 @@ function App() {
                   googleEmail={globalUserEmail}
                 />
               )}
-              {/* 其他主內容... */}
+              {activePanel === "start" && (
+                <div className="game-panel-in-board">
+                  <GamePanelApp onGoHome={() => setActivePanel("main")} />
+                </div>
+              )}
             </div>
           </div>
         </>

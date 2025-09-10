@@ -1,0 +1,42 @@
+{
+  "charging_power_up_sound_effect_electrical_energy_power_audio_free_4k_download_no": {
+    "path": "voice/charging_power_up_sound_effect_electrical_energy_power_audio_free_4k_download_-_no_copyright.mp3",
+    "type": "audio"
+  },
+  "coin": {
+    "path": "images/coin.gif",
+    "type": "image"
+  },
+  "coins_animation": {
+    "path": "images/coins_animation.gif",
+    "type": "image"
+  },
+  "coins_drop_sound_effect_hd": {
+    "path": "voice/coins_drop_sound_effect_hd.mp3",
+    "type": "audio"
+  },
+  "coins_soundeffect": {
+    "path": "voice/coins_soundeffect.mp3",
+    "type": "audio"
+  },
+  "dollar_coins_chest": {
+    "path": "images/dollar_coins_chest.gif",
+    "type": "image"
+  },
+  "explosion_red_particles": {
+    "path": "images/explosion_red_particles.gif",
+    "type": "image"
+  },
+  "minecraft_sound_effects_chest_sound_effect": {
+    "path": "voice/minecraft_sound_effects_chest_sound_effect.mp3",
+    "type": "audio"
+  },
+  "musmus_bgm_165": {
+    "path": "voice/musmus-bgm-165.mp3",
+    "type": "audio"
+  },
+  "musmus_bgm_187": {
+    "path": "voice/musmus-bgm-187.mp3",
+    "type": "audio"
+  }
+}

@@ -11,7 +11,7 @@
 .calendar-frame {
   display: flex;
   flex-direction: column;
-  width: 56.3vw; /* 行事曆整體寬度，可依背景格子調整 */
+  width: 37.7vw; /* 行事曆整體寬度，可依背景格子調整 */
 }
 
 /* 行事曆上方區塊，預留標題列空間 */
@@ -97,7 +97,7 @@
 
 /* 行事曆內容外框，含所有格子 */
 .calendar-board {
-  height: 442px; /* 行事曆內容高度 */
+  height: 472px; /* 行事曆內容高度 */
   background-color: #e6c4ad; /* 奶茶色背景 */
   border: 1.5px solid #c2a28e; /* 深奶茶色邊框 */
   padding: 8px; /* 內距 */

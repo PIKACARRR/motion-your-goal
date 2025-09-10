@@ -99,8 +99,8 @@ html {
   align-items: center;
   gap: 4rem;
   position: absolute;
-  top:  13rem; /* 依需求調整 */
-  left: 22.5rem; /* 依需求調整 */
+  top:  12.8rem; /* 依需求調整 */
+  left: 46.5rem; /* 依需求調整 */
   margin-top: 0;
 }
 
@@ -119,8 +119,8 @@ html {
   align-items: flex-start;
   gap: 2rem;
   position: absolute;
-  margin-top: 17rem;
-  left: 25rem;         
+  margin-top: 21rem;
+  left: 49rem;         
 }
 
 /* 功能按鈕圖片樣式 */

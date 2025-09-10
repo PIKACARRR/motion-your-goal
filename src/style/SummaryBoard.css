@@ -1,0 +1,150 @@
+.summary-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px; /* 再加大間距 */
+  background: linear-gradient(135deg, #fef9f5, #fdfdff, #f7fdf9);
+  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  font-size: 18px; /* 整體字體放大 */
+}
+
+.summary-box {
+  max-width: 1200px; /* 框框更大 */
+  width: 100%;
+  background: #ffffff;
+  border: 3px solid #e6dcd1;
+  border-radius: 24px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+  padding: 40px; /* 內距加大 */
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.summary-section {
+  background: #fffdf9;
+  border: 2px solid #e7d7c5;
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+  position: relative;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+  font-size: 18px;
+}
+
+.summary-title {
+  position: absolute;
+  top: -16px;
+  left: 24px;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #5a3c1f;
+  background: #fff9f2;
+  border-radius: 10px;
+  border: 2px solid #e0cbb5;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.result-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+}
+
+.error-card {
+  background: #f0fff4;        /* 淡綠色背景 */
+  border-left: 6px solid #e4f6b0; /* 綠色強調邊框 */
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 14px;
+  font-size: 18px;
+  color: #22543d; /* 深綠文字 */
+}
+
+
+.buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 20px;
+}
+
+.btn {
+  flex: 1;
+  padding: 16px 24px; /* 按鈕加大 */
+  border-radius: 60px;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-retry {
+  background: linear-gradient(135deg, #ffb067, #e6813e);
+  color: white;
+  box-shadow: 0 6px 14px rgba(230, 129, 62, 0.35);
+}
+.btn-retry:hover {
+  background: linear-gradient(135deg, #ff9d42, #d96c2a);
+  transform: translateY(-3px);
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #6fcf97, #4caf50);
+  color: white;
+  box-shadow: 0 6px 14px rgba(76, 175, 80, 0.35);
+}
+.btn-save:hover {
+  background: linear-gradient(135deg, #5dd084, #3e9443);
+  transform: translateY(-3px);
+}
+
+/* ⭐ 新增回首頁按鈕樣式 */
+.btn-home {
+  background: linear-gradient(135deg, #64b5f6, #1976d2);
+  color: white;
+  box-shadow: 0 6px 14px rgba(25, 118, 210, 0.35);
+}
+.btn-home:hover {
+  background: linear-gradient(135deg, #42a5f5, #1565c0);
+  transform: translateY(-3px);
+}
+
+.history {
+  margin-top: 28px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  font-size: 16px;
+}
+
+.history-item {
+  border: 1px solid #eee3d9;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #faf9f7;
+  transition: all 0.2s ease-in-out;
+  font-size: 16px;
+}
+.history-item:hover {
+  transform: scale(1.03);
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

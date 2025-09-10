@@ -1,0 +1,22 @@
+Demo tutorial video for Wall Angel exercise
+
+This is a placeholder file. Replace with actual tutorial videos:
+- wall_angel_tutorial.mp4
+- march_in_place_tutorial.mp4
+- side_step_tutorial.mp4
+- jumping_jack_tutorial.mp4
+- lunge_tutorial.mp4
+- triceps_extension_tutorial.mp4
+- push_ups_tutorial.mp4
+- front_shoulder_stretch_tutorial.mp4
+- crunch_tutorial.mp4
+- swimming_tutorial.mp4
+- rhomboid_pull_tutorial.mp4
+- butt_kick_tutorial.mp4
+- double_arm_raise_tutorial.mp4
+- long_jump_arm_tutorial.mp4
+- arm_swing_tutorial.mp4
+- squat_tutorial.mp4
+- single_leg_deadlift_tutorial.mp4
+- nonstop_jump_rope_tutorial.mp4
+- skipping_rope_tutorial.mp4
