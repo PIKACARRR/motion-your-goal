@@ -1,10 +1,13 @@
+/* 使用相對字體大小 */
 html {
   font-size: 16px;
 }
+
 /* 全域通用設定，防止選取與拖曳 */
 * {
   user-select: none;
   -webkit-user-drag: none;
+  box-sizing: border-box; /* 新增：統一盒模型 */
 } 
 
 /* 雲朵動畫 keyframes */
@@ -44,38 +47,40 @@ html {
   position: absolute;
   top: 10%;
   left: -30%;
-  width: 20%;
+  width: clamp(15%, 20%, 25%); /* 響應式寬度 */
   z-index: 9;
   animation: moveCloud 60s linear infinite;
 }
 .cloud2 {
   top: 25%;
-  width: 25%;
+  width: clamp(20%, 25%, 30%);
   animation-delay: -20s;
 }
 .cloud3 {
   top: 35%;
-  width: 30%;
+  width: clamp(25%, 30%, 35%);
   animation-delay: -40s;
 }
 
-/* 廣告看板裝飾圖 */
+/* 廣告看板裝飾圖 - 改用響應式尺寸 */
 .advertising_billboard {
   position: fixed;
-  top: 12vh;
-  left: 50vw;
-  transform: translate(-52.5%, -25%);
-  width: 110rem;
+  top: -5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(98vw, 110rem); /* 限制最大寬度 */
   height: auto;
   z-index: 10;
+  max-width: 1824px; /* 防止過大 */
 }
 
 /* 每週任務裝飾圖 */
-
 .task-btn {
-  width: 10rem;
-  height: 14rem;
-  margin: 0 2rem;
+  /* 供交錯位移用的 CSS 變數（預設不位移） */
+  --stagger-indent: 0rem;
+  width: clamp(8rem, 10rem, 12rem); /* 響應式寬度 */
+  height: clamp(11rem, 13rem, 17rem); /* 響應式高度 */
+  margin: 0 1rem;
   z-index: 10;
   background-size: cover;
   background-repeat: no-repeat;
@@ -86,41 +91,80 @@ html {
   transition: transform 0.1s;
   position: static;
   background-color: transparent;
+  /* 視覺位移不影響 grid 間距 */
+  transform: translateX(var(--stagger-indent));
 }
 .task-btn:active {
-  transform: scale(0.96);
+  /* 與位移合成，避免 :active 覆蓋位移 */
+  transform: translateX(var(--stagger-indent)) scale(0.96);
 }
 
-/* 功能按鈕外層包裝，絕對定位 */
-/* 主面板按鈕區 flex 排版 */
+/* 主面板按鈕區 - 改用更彈性的定位 */
 .button-row {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 4rem;
+  gap: clamp(2rem, 4rem, 6rem);
   position: absolute;
-  top:  12.8rem; /* 依需求調整 */
-  left: 46.5rem; /* 依需求調整 */
+  top: 30.5vh; /* 改用視窗高度百分比 */
+  left: 52%;
+  transform: translateX(-50%);
+  width: 100%;
   margin-top: 0;
+  z-index: 40; /* 高於主內容(30)，可在面板開啟時仍可點擊以切換 */
 }
 
 /* 功能按鈕容器，控制寬度與對齊 */
 .button-wrapper {
-  width: 7rem;
+  width: clamp(5rem, 7rem, 9rem);
   z-index: 10;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-/* 任務卡片區 flex 排版 */
-.task-row {
+
+/* 任務卡片區 - 改用更彈性的定位 */
+.task-row-wrapper {
+  position: absolute;
+  top: 37vh; /* 改用視窗高度百分比 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
   display: flex;
   justify-content: center;
+  z-index: 20; /* 提到看板與主內容之上，避免被透明層遮擋 */
+}
+
+.task-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* 桌面固定 3 欄，才能做 1 1 1 / 2 2 2 的交錯 */
+  gap: clamp(1rem, 2vw, 2rem);
+  justify-content: center;
   align-items: flex-start;
-  gap: 2rem;
-  position: absolute;
-  margin-top: 21rem;
-  left: 49rem;         
+  max-width: clamp(24rem, 60vw, 36rem);
+}
+
+/* 基本：不靠外距維持等間距，並讓卡片在格子內置中 */
+.task-row .task-btn { 
+  margin: 0; 
+  justify-self: center;
+}
+
+/* 桌面寬度下的排列微調（3 欄版） */
+@media screen and (min-width: 1200px) {
+  /* 第二排（第 4~6 個）做水平交錯的視覺位移，保留 grid 的 gap */
+  .task-row .task-btn:nth-child(n+4) {
+    --stagger-indent: clamp(0.75rem, 2.2vw, 2.8rem);
+  }
+  /* 若總數為 4（第 4 張即為最後一張），把它放到中間欄位 */
+  .task-row .task-btn:nth-child(4):last-child {
+    grid-column: 2 / span 1;
+  }
+
+  /* 若總數為 5（第 5 張即為最後一張），把它放到第 3 欄，與第 4 張形成對稱 */
+  .task-row .task-btn:nth-child(5):last-child {
+    grid-column: 3 / span 1;
+  }
 }
 
 /* 功能按鈕圖片樣式 */
@@ -166,14 +210,14 @@ html {
 /* 全螢幕按鈕樣式 */
 .full_screen_button {
   position: relative;
-  padding: 30px 50px;
+  padding: clamp(20px, 30px, 40px) clamp(30px, 50px, 70px);
   border-radius: 12px;
   background: linear-gradient(135deg, #2d90f3 0%, #1976d2 100%);
   color: #fff;
   box-shadow: 
     0px 8px 25px rgba(73, 141, 208, 0.4),
     0px 4px 15px rgba(87, 85, 85, 0.2);
-  font-size: 24px;
+  font-size: clamp(18px, 24px, 30px);
   font-weight: 600;
   outline: 0;
   border: 0;
@@ -231,9 +275,66 @@ html {
 }
 
 .main-content {
-min-height: 600px;
-display: flex;
-justify-content: center;
-align-items: flex-start;
-position: relative;
+  min-height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  z-index: 30; /* 蓋過任務(20)與看板(10)，但低於按鈕列(40) 以保留切換 */
+  pointer-events: none; /* 預設不攔截點擊，讓上排任務可點 */
+}
+
+/* 開啟面板時才讓內容接收點擊 */
+.main-content.panel-open {
+  pointer-events: auto;
+}
+
+/* 響應式媒體查詢 */
+@media screen and (max-width: 1200px) {
+  .button-row {
+    gap: 2rem;
+  }
+  
+  .task-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .advertising_billboard {
+    width: 95vw;
+    top: 8vh;
+  }
+  
+  .button-row {
+    top: 25vh;
+    gap: 1rem;
+  }
+  
+  .task-row-wrapper {
+    top: 45vh;
+  }
+  
+  .task-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .task-btn {
+    width: 8rem;
+    height: 10rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .button-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .advertising_billboard {
+    width: 98vw;
+    top: 5vh;
+  }
 }

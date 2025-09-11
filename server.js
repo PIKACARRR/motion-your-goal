@@ -101,6 +101,29 @@ app.post('/delete-data', (req, res) => {
   }
 });
 
+// --------- 讀取 savedata（個人檔案，含 finalScore） ---------
+app.get('/load-user', (req, res) => {
+  const googleAccount = req.query.googleAccount;
+  if (!googleAccount) {
+    res.status(400).json({ error: '缺少 googleAccount' });
+    return;
+  }
+  const dirPath = path.join(__dirname, 'savedata');
+  const safeEmail = googleAccount.replace(/[^a-zA-Z0-9]/g, '_');
+  const fileName = `savedata_${safeEmail}.json`;
+  const filePath = path.join(dirPath, fileName);
+  if (fs.existsSync(filePath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      res.json(data);
+    } catch (e) {
+      res.status(500).json({ error: '讀取檔案失敗' });
+    }
+  } else {
+    res.json({});
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`✅ 後端啟動成功：http://localhost:${PORT}`);
 });

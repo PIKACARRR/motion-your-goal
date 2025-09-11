@@ -1,8 +1,13 @@
 // components/SportSelector.jsx
-import React, { useState } from 'react';
+import React from 'react';
 
-export default function SportSelector({ onSelect }) {
-  const [sport, setSport] = React.useState("");
+export default function SportSelector({ onSelect, initialValue = "" }) {
+  const [sport, setSport] = React.useState(initialValue || "");
+
+  React.useEffect(() => {
+    // 若外部傳入初始值，更新選單顯示，但不自動開始
+    setSport(initialValue || "");
+  }, [initialValue]);
 
   function handleChange(e) {
     setSport(e.target.value);

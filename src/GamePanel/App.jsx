@@ -12,7 +12,7 @@ import SummaryBoardWithLocalSave from "./components/SummaryBoard.tsx"
 // 資源管理
 import { Assets } from './test.js'
 
-export default function App({ onGoHome }) {
+export default function App({ onGoHome, initialSport = null }) {
   const [phase, setPhase] = useState('select')
   const [sport, setSport] = useState(null)
   const [energy, setEnergy] = useState(0)
@@ -131,10 +131,25 @@ export default function App({ onGoHome }) {
     else node.pause()
   }
 
-  // 依 phase 啟停 BGM
+  // 依 phase 啟停 BGM（內聯播放邏輯）
   useEffect(() => {
     if (phase === 'play' && assetsReady.current) {
-      startBgmPlaylist()
+      stopBgm()
+      if (!bgmKeysRef.current.length || !assetsRef.current) return
+      const list = bgmKeysRef.current
+      const key = list[bgmIndexRef.current % list.length]
+      const node = assetsRef.current.play(key, { volume: 0.45, loop: false })
+      bgmNodeRef.current = node
+      node.onended = () => {
+        bgmIndexRef.current = (bgmIndexRef.current + 1) % list.length
+        stopBgm()
+        if (assetsRef.current) {
+          const nextKey = list[bgmIndexRef.current]
+          const nextNode = assetsRef.current.play(nextKey, { volume: 0.45, loop: false })
+          bgmNodeRef.current = nextNode
+          nextNode.onended = node.onended
+        }
+      }
       return () => stopBgm()
     } else {
       stopBgm()
@@ -238,7 +253,7 @@ export default function App({ onGoHome }) {
   if (phase === 'select') {
     return (
       <>
-        <SportSelector onSelect={handleSportSelect} />
+        <SportSelector onSelect={handleSportSelect} initialValue={initialSport || ''} />
         <InteractiveMascot
           position="bottom-right"
           exerciseCount={0}

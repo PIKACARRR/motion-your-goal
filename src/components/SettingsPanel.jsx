@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../style/SettingsPanel.css";
 import { toast } from "react-toastify";
 
-export default function SettingsPanel({ onClose = () => {}, globalAccessToken, googleEmail = "" }) {
+export default function SettingsPanel({ onClose = () => {}, onSaved = () => {}, globalAccessToken, googleEmail = "" }) {
   // 取得登入用的 accessToken
   const accessToken = globalAccessToken;
 
@@ -220,12 +220,14 @@ export default function SettingsPanel({ onClose = () => {}, globalAccessToken, g
 
       if (!res.ok) throw new Error("儲存失敗");
 
-      const result = await res.json();
+  const result = await res.json();
       console.log('=== 後端回應 ===');
       console.log('儲存結果:', result);
       console.log('===============');
       
       toast.success(`✅ 儲存成功！檔名：${result.file}`);
+  // 通知外層（App）設定已儲存，讓其它元件（如 TaskSelector）及時刷新
+  try { onSaved(saveData); } catch {}
     } catch (err) {
       console.error('儲存錯誤:', err);
       toast.error("❌ 儲存失敗，請確認後端是否啟動");
